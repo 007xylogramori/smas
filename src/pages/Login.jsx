@@ -30,7 +30,7 @@ const Login = () => {
       localStorage.setItem("userEmail", credentials.email);
       localStorage.setItem("authToken", json.authToken);
       console.log(localStorage.getItem("authToken"));
-      navigate("/", {
+      navigate("/qr", {
         state: { useremail: localStorage.getItem("userEmail") },
       });
     }
