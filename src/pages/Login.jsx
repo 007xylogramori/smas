@@ -1,18 +1,22 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [credentials, setcredentials] = useState({
     email: "",
     password: "",
   });
+
   let navigate = useNavigate();
+
   const handleOnChange = (e) => {
     setcredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch("url", {
+
+    const response = await fetch(process.env.REACT_APP_API_URL + "/api/token/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -22,17 +26,15 @@ const Login = () => {
         password: credentials.password,
       }),
     });
+
     const json = await response.json();
 
-    if (!json.success) {
-      alert("ENTER VALID CREDENTIALS");
+    if (response.status === 200) {
+      localStorage.setItem("access", json.access);
+      localStorage.setItem("refresh", json.refresh);
+      navigate("/qr");
     } else {
-      localStorage.setItem("userEmail", credentials.email);
-      localStorage.setItem("authToken", json.authToken);
-      console.log(localStorage.getItem("authToken"));
-      navigate("/qr", {
-        state: { useremail: localStorage.getItem("userEmail") },
-      });
+      alert("Please Enter Valid Credentials");
     }
   };
 
